@@ -20,6 +20,44 @@ map.addControl(new MaplibreExportControl.MaplibreExportControl({
 // Export
 
 
+// Local GeoJSON
+const handleFileSelect = (evt) => {
+    const file = evt.target.files[0];
+
+    const reader = new FileReader();
+
+    reader.onload = (theFile) => {
+        const geoJSONcontent = JSON.parse(theFile.target.result);
+
+        map.addSource('uploaded-source', {
+            'type': 'geojson',
+            'data': geoJSONcontent
+        });
+
+        map.addLayer({
+            'id': 'uploaded-polygons',
+            'type': 'line',
+            'source': 'uploaded-source',
+            'layout': {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            'paint': {
+                'line-color': '#ff0000',
+                'line-width': 1
+            }
+
+            // 'filter': ['==', '$type', 'Feature']
+        });
+    };
+
+    reader.readAsText(file, 'UTF-8');
+};
+
+document.getElementById('file').addEventListener('change', handleFileSelect, false);
+// Local GeoJSON
+
+
 // map.addControl(
 //     new maplibregl.GeolocateControl({
 //         positionOptions: {
