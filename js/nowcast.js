@@ -3,11 +3,11 @@ class NowcastControl {
         this.map = map;
 
         const nowcastButton = document.createElement('button');
-        nowcastButton.className = 'maplibregl-ctrl-geolocate mapboxgl-ctrl-geolocate';
+        nowcastButton.className = 'maplibregl-ctrl-nowcast mapboxgl-ctrl-nowcast';
         nowcastButton.type = 'button';
         nowcastButton.innerHTML = '<span id="nowcast-button-icon" class="maplibregl-ctrl-icon mapboxgl-ctrl-icon" aria-hidden="true"></span>';
         nowcastButton.addEventListener('click', (e) => {
-            alert('Nowcast button click');
+            document.getElementById('nowcast-control').style.display = (document.getElementById('nowcast-control').style.display == 'block') ? 'none' : 'block';
         });
 
         this.container = document.createElement('div');

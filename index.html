@@ -25,15 +25,15 @@
 
     <div class="map-overlay top">
         <!-- Nowcast control -->
-        <div class="map-overlay-inner">
+        <div id="nowcast-control" class="map-overlay-inner">
             <h2>Nowcast</h2>
-            <label id="datetime"></label>
-            <input id="slider" type="range" min="0" max="11" step="1" value="0" />
+            <label id="nowcast-datetime"></label>
+            <input id="nowcast-slider" type="range" min="0" max="11" step="1" value="0" />
         </div>
         <!-- Nowcast control -->
 
         <!-- Local GeoJSON-->
-        <div class="map-overlay-inner">
+        <div id="local-geojson-control" class="map-overlay-inner">
             <h2>Local GeoJSON</h2>
             <div id="geojson" class="geojson">
                 <input type="file" id="file" name="file"
@@ -43,7 +43,7 @@
         <!-- Local GeoJSON-->
     </div>
 
-
+    <script src="js/local-geojson.js"></script>
     <script src="js/nowcast.js"></script>
     <script src="js/index.js"></script>
 
