@@ -32,9 +32,13 @@ const formatDate = (date, format) => {
 
 const map = new maplibregl.Map({
     container: 'map',
+    hash: true,
     style: 'https://gsi-cyberjapan.github.io/gsivectortile-mapbox-gl-js/pale.json',
     center: [139.7109, 35.729503],
-    zoom: 10
+    zoom: 10,
+    minZoom: 4,
+    maxZoom: 10,
+    localIdeographFontFamily: false
 });
 
 map.addControl(new maplibregl.NavigationControl(), 'bottom-right');
@@ -113,8 +117,8 @@ map.on('load', () => {
         'tiles': [
             'https://yzkn.github.io/MyKMLsMap/tiles/{z}/{x}/{y}.pbf'
         ],
-        'minzoom': 0,
-        'maxzoom': 18
+        'minzoom': 4,
+        'maxzoom': 10
     });
     map.addLayer(
         {
@@ -138,6 +142,7 @@ map.on('load', () => {
 
     // Add Nowcast tiles
     const NOWCAST_URL = 'https://www.jma.go.jp/bosai/jmatile/data/nowc/targetTimes_N2.json';
+    const RASRF_URL = 'https://www.jma.go.jp/bosai/jmatile/data/rasrf/targetTimes.json';
     let nowcastSources = [];
 
     fetch(NOWCAST_URL)
@@ -162,7 +167,7 @@ map.on('load', () => {
                         `https://www.jma.go.jp/bosai/jmatile/data/nowc/${element.basetime}/none/${element.validtime}/surf/hrpns/{z}/{x}/{y}.png`
                     ],
                     'minzoom': 4,
-                    'maxzoom': 14
+                    'maxzoom': 10
                 });
                 map.addLayer(
                     {
@@ -176,18 +181,68 @@ map.on('load', () => {
                 map.setPaintProperty(sourceId, "raster-opacity", 1);
             });
 
-            // Nowcast control
-            document.getElementById('nowcast-slider').addEventListener('change', () => {
-                document.getElementById('nowcast-datetime').innerText = formatDate(parseDateString(nowcastSources[document.getElementById('nowcast-slider').value]['validtime']), 'MM/dd HH:mm');
+            const lastValidTime = nowcastSources[nowcastSources.length - 1]['validtime'];
 
-                nowcastSources.forEach(item => {
-                    map.setLayoutProperty(item['id'], 'visibility', 'none');
+            fetch(RASRF_URL)
+                .then(function (data) {
+                    return data.json();
+                })
+                .then(function (json) {
+                    // 最小値を取得にはjson[0].validtime
+                    json.sort(function (a, b) {
+                        return a.validtime - b.validtime;
+                    });
+
+                    json
+                        .filter(element => element.validtime > lastValidTime)
+                        .forEach(element => {
+                            const basetime = element.basetime;
+                            const validtime = element.validtime;
+                            const sourceId = `Rasrf${basetime}${validtime}`;
+
+                            nowcastSources.push({ id: sourceId, validtime: validtime });
+                            map.addSource(sourceId, {
+                                'type': 'raster',
+                                'tiles': [
+                                    `https://www.jma.go.jp/bosai/jmatile/data/rasrf/${element.basetime}/${element.member}/${element.validtime}/surf/rasrf/{z}/{x}/{y}.png`
+                                ],
+                                'minzoom': 4,
+                                'maxzoom': 10
+                            });
+                            map.addLayer(
+                                {
+                                    'id': sourceId,
+                                    'type': 'raster',
+                                    'source': sourceId,
+                                    'source-layer': sourceId
+                                }
+                            );
+                            map.setLayoutProperty(sourceId, 'visibility', 'none');
+                            map.setPaintProperty(sourceId, "raster-opacity", 1);
+                        });
+
+                    // Nowcast control
+                    console.log('nowcastSources', nowcastSources);
+                    document.getElementById('nowcast-slider').max = nowcastSources.length - 1;
+
+                    document.getElementById('nowcast-slider').addEventListener('change', () => {
+                        document.getElementById('nowcast-datetime').innerHTML =
+                            (nowcastSources[document.getElementById('nowcast-slider').value]['id'].startsWith('Nowcast') ? '<font color="#4caf50">' : '<font color="#3f51b5">') +
+                            formatDate(parseDateString(nowcastSources[document.getElementById('nowcast-slider').value]['validtime']), 'MM/dd HH:mm') +
+                            '</font>';
+
+                        nowcastSources.forEach(item => {
+                            map.setLayoutProperty(item['id'], 'visibility', 'none');
+                        });
+                        map.setLayoutProperty(nowcastSources[document.getElementById('nowcast-slider').value]['id'], 'visibility', 'visible');
+                    }, false);
+                    document.getElementById('nowcast-datetime').innerHTML =
+                        '<font color="#4caf50">' +
+                        formatDate(parseDateString(nowcastSources[0]['validtime']), 'MM/dd HH:mm') +
+                        '</font>';
+                    map.setLayoutProperty(nowcastSources[0]['id'], 'visibility', 'visible');
+                    // Nowcast control
                 });
-                map.setLayoutProperty(nowcastSources[document.getElementById('nowcast-slider').value]['id'], 'visibility', 'visible');
-            }, false);
-            document.getElementById('nowcast-datetime').innerText = formatDate(parseDateString(nowcastSources[0]['validtime']), 'MM/dd HH:mm');
-            map.setLayoutProperty(nowcastSources[0]['id'], 'visibility', 'visible');
-            // Nowcast control
         });
     // Add Nowcast tiles
 });
