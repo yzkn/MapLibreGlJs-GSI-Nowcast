@@ -69,6 +69,10 @@ map.addControl(
 );
 // Locating
 
+// Nowcast control
+map.addControl(new NowcastControl(), 'top-right');
+// Nowcast control
+
 
 // Add vector tiles
 map.on('load', () => {
