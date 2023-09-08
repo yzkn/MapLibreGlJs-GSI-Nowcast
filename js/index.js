@@ -57,14 +57,14 @@ const handleFileSelect = (evt) => {
 document.getElementById('file').addEventListener('change', handleFileSelect, false);
 // Local GeoJSON
 
-
-// map.addControl(
-//     new maplibregl.GeolocateControl({
-//         positionOptions: {
-//             enableHighAccuracy: true
-//         },
-//         trackUserLocation: true,
-//         showUserHeading: true
-//     }),
-//     'bottom-right'
-// );
+// Locating
+map.addControl(
+    new maplibregl.GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true
+        },
+        trackUserLocation: true
+    }),
+    'bottom-right'
+);
+// Locating
