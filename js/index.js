@@ -68,3 +68,34 @@ map.addControl(
     'bottom-right'
 );
 // Locating
+
+
+// Add vector tiles
+map.on('load', () => {
+    map.addSource('All', {
+        'type': 'vector',
+        'tiles': [
+            'https://yzkn.github.io/MyKMLsMap/tiles/{z}/{x}/{y}.pbf'
+        ],
+        'minzoom': 0,
+        'maxzoom': 18
+    });
+    map.addLayer(
+        {
+            'id': 'All',
+            'type': 'line',
+            'source': 'All',
+            'source-layer': 'All',
+            'layout': {
+                'line-cap': 'round',
+                'line-join': 'round'
+            },
+            'paint': {
+                'line-opacity': 0.8,
+                'line-color': 'rgb(255, 0, 0)',
+                'line-width': 1
+            }
+        }
+    );
+});
+// Add vector tiles
