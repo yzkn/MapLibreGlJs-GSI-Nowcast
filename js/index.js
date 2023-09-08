@@ -32,7 +32,7 @@ const formatDate = (date, format) => {
 
 const map = new maplibregl.Map({
     container: 'map',
-    style: 'https://gsi-cyberjapan.github.io/gsivectortile-mapbox-gl-js/std.json',
+    style: 'https://gsi-cyberjapan.github.io/gsivectortile-mapbox-gl-js/pale.json',
     center: [139.7109, 35.729503],
     zoom: 10
 });
