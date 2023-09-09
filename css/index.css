@@ -69,3 +69,10 @@ body,
 }
 
 /* Local GeoJSON control */
+
+/* Style switcher control */
+#switcher-button-icon {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABdUlEQVRIS82VYZGDMBCFtw6QgAQktA5AAaCAogBQACgAFFAHVEIlVAIO7u7LTDoBWshwx8ztH2iT7Nt9b184ff2EHBinfwNwv98lTVNxHEfCMJQoiqz63uyAxHVdy+12myQ8n8/SNI24rrsK9BFgHEcpikLathXeP8X1epUkST4CLQBsE88BASrLclHHC4DEVEvVaxWv8YE+gJj6vACCIFjwbKXim03oMwyDWjkEwPd96ft+CsCvqqrUxDyfz13FQ1GWZYoi3icdmBkBYuZtg2QkJblOrM9OpijPczVubEZoQBB+LeAbYT3PEzzTdZ3yxwKAxcvlov43TfR4PBQQ62awh4p5zs0I/+iwoGhOjWkiOkEfOsNYehRNM1prQMWA6ZibaG7GXRpADRVrDbSJeFKAnrQ/0SCOYwFwroEprnkh/koDQLiuoe0dVVY+OEwDk4I9Grzzy+YHB6AtDdaMuAmgD2sfmBrYXCXWADbJdlG0N7E+9w2l1XnIbffIdAAAAABJRU5ErkJggg==');
+}
+
+/* Style switcher control */
