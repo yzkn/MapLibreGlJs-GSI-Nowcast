@@ -1,6 +1,27 @@
 // Copyright (c) 2023 YA-androidapp(https://github.com/yzkn) All rights reserved.
 
 
+// Style switcher
+const styles = [
+    {
+        style: "std",
+        title: "標準地図",
+        uri: "https://gsi-cyberjapan.github.io/gsivectortile-mapbox-gl-js/std.json"
+    },
+    {
+        style: "pale",
+        title: "淡色地図",
+        uri: "https://gsi-cyberjapan.github.io/gsivectortile-mapbox-gl-js/pale.json"
+    },
+    {
+        style: "blank",
+        title: "白地図",
+        uri: "https://gsi-cyberjapan.github.io/gsivectortile-mapbox-gl-js/blank.json"
+    }
+];
+// Style switcher
+
+
 const parseDateString = (str) => {
     const year = parseInt(str.substring(0, 4));
     const month = parseInt(str.substring(4, 6));
@@ -49,13 +70,13 @@ const isWebglSupported = () => {
     return false;
 };
 
-if (!isWebglSupported()) {
-    alert('Your browser does not support MapLibre GL');
-} else {
+const initMap = (s) => {
+    console.log('s', s);
+
     const map = new maplibregl.Map({
         container: 'map',
         hash: true,
-        style: 'https://gsi-cyberjapan.github.io/gsivectortile-mapbox-gl-js/pale.json',
+        style: s,
         center: [139.7109, 35.729503],
         zoom: 10,
         minZoom: 4,
@@ -124,36 +145,9 @@ if (!isWebglSupported()) {
     // Locating
 
 
-    // // Style switcher
-    // const styles = [
-    //     {
-    //         title: "標準地図",
-    //         uri: "https://gsi-cyberjapan.github.io/gsivectortile-mapbox-gl-js/std.json"
-    //     },
-    //     {
-    //         title: "淡色地図",
-    //         uri: "https://gsi-cyberjapan.github.io/gsivectortile-mapbox-gl-js/pale.json"
-    //     },
-    //     {
-    //         title: "白地図",
-    //         uri: "https://gsi-cyberjapan.github.io/gsivectortile-mapbox-gl-js/blank.json"
-    //     }
-    // ];
-    // const select = document.getElementById('style-switch');
-    // styles.forEach(style => {
-    //     const option = document.createElement('option');
-    //     option.value = style.uri;
-    //     option.textContent = style.title;
-    //     select.appendChild(option);
-    // });
-    // select.addEventListener('change', (e) => {
-    //     const selected = e.target.value;
-    //     console.log('selected', selected);
-
-    //     map.setStyle(selected);
-    // });
-    // map.addControl(new StyleSwitcherControl());
-    // // Style switcher
+    // Style switcher
+    map.addControl(new StyleSwitcherControl());
+    // Style switcher
 
 
     // Nowcast control
@@ -302,4 +296,37 @@ if (!isWebglSupported()) {
             });
         // Add Nowcast tiles
     });
-}
+};
+
+window.addEventListener('DOMContentLoaded', (event) => {
+    const searchParams = new URLSearchParams(window.location.search);
+
+
+    // Style switcher
+    const select = document.getElementById('style-switch');
+    select.innerHTML = '';
+    styles.forEach(s => {
+        const option = document.createElement('option');
+        option.value = s.style;
+        option.textContent = s.title;
+        if ((searchParams.has('style')) && (searchParams.get('style') == s.style)) {
+            option.selected = 'selected';
+        }
+        select.appendChild(option);
+    });
+    select.addEventListener('change', (e) => {
+        const selectedStyle = e.target.value;
+        window.location = location.pathname + '?style=' + selectedStyle;
+    });
+    // Style switcher
+
+
+    if (!isWebglSupported()) {
+        alert('Your browser does not support MapLibre GL');
+    } else {
+        const selectedStyle = document.getElementById('style-switch').value;
+        initMap(
+            styles.find((v) => v.style === selectedStyle)['uri']
+        );
+    }
+});
